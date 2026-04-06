@@ -71,3 +71,5 @@ export default defineConfig([
   },
 ])
 ```
+## Credits
+* 3D Brain Model: "human-brain" by [Yash_Dandavate](https://sketchfab.com/Yash_Dandavate) is licensed under Creative Commons Attribution (CC-BY).
