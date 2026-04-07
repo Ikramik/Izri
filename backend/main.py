@@ -1,6 +1,9 @@
+import random
+import os
+import shutil
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-import random
+from moviepy import VideoFileClip
 
 #initializing Mindora
 
@@ -17,7 +20,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+# temporary upload directory exists
+os.makedirs("temp_uploads", exist_ok=True)
 
 @app.get("/")
 async def root():
@@ -50,18 +54,31 @@ async def get_dummy_brain_data():
         "data": activation_data
     }
 
-# --- OUR NEW VIDEO UPLOAD ENDPOINT ---
+#UPDATED VIDEO UPLOAD ENDPOINT
 @app.post("/api/upload-video")
 async def upload_video(file: UploadFile = File(...)):
-    # In the future, this is where we will send the file to the AI.
-    # For today, we just want to prove the backend successfully received the heavy .mp4 file!
+    # Define the file paths
+    video_path = f"temp_uploads/{file.filename}"
+    audio_path = f"temp_uploads/{file.filename.split('.')[0]}.mp3"
+
+    # Save the uploaded MP4 directly to the server's hard drive
+    with open(video_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
     
-    # Read how big the file is
-    file_bytes = await file.read()
-    file_size_mb = round(len(file_bytes) / (1024 * 1024), 2)
-    
+    # Extract the Audio for the AI model
+    try:
+        # Load the video into memory
+        video = VideoFileClip(video_path)
+        # Rip the audio and save it as an MP3
+        video.audio.write_audiofile(audio_path, logger=None)
+        # Close the file to free up computer memory
+        video.close()
+        audio_status = "Audio extracted successfully"
+    except Exception as e:
+        print(f"Error extracting audio: {e}")
+        audio_status = "Audio extraction failed"
+
     return {
         "status": "success",
-        "message": f"Successfully received {file.filename}",
-        "size_mb": file_size_mb
+        "message": f"Successfully received {file.filename}. {audio_status}.",
     }

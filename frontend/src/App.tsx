@@ -1,6 +1,6 @@
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
-import { useRef, Suspense, useState, ChangeEvent } from 'react';
+import { useRef, Suspense, useState, type ChangeEvent } from 'react';
 import * as THREE from 'three';
 
 //Temporary 3D object
