@@ -18,7 +18,7 @@ function getRegionAverage(data: number[], start: number, end: number) {
   return slice.reduce((a, b) => a + b, 0) / slice.length;
 }
 
-function getInsightText(regionName: string, average: number) {
+function getInsightText(average: number) {
   if (average > 0.75) return { level: "PEAK ACTIVATION", color: "#e11d48", desc: "High emotional resonance and brand reward calculated." };
   else if (average > 0.55) return { level: "ELEVATED", color: "#ea580c", desc: "Steady cognitive encoding and attention maintained." };
   else return { level: "BASELINE", color: "#94a3b8", desc: "Standard neural resting state. No significant spikes." };
@@ -163,9 +163,9 @@ export default function App() {
 
       setInsights({
         globalScore: izriScore,
-        vmPFC: getInsightText("vmPFC", normalize(getRegionAverage(rawData, BRAIN_REGIONS.vmPFC.start, BRAIN_REGIONS.vmPFC.end))),
-        amygdala: getInsightText("Amygdala", normalize(getRegionAverage(rawData, BRAIN_REGIONS.amygdala.start, BRAIN_REGIONS.amygdala.end))),
-        hippocampus: getInsightText("Hippocampus", normalize(getRegionAverage(rawData, BRAIN_REGIONS.hippocampus.start, BRAIN_REGIONS.hippocampus.end)))
+        vmPFC: getInsightText(normalize(getRegionAverage(rawData, BRAIN_REGIONS.vmPFC.start, BRAIN_REGIONS.vmPFC.end))),
+        amygdala: getInsightText(normalize(getRegionAverage(rawData, BRAIN_REGIONS.amygdala.start, BRAIN_REGIONS.amygdala.end))),
+        hippocampus: getInsightText(normalize(getRegionAverage(rawData, BRAIN_REGIONS.hippocampus.start, BRAIN_REGIONS.hippocampus.end)))
       });
 
       setUploadMessage("Cortical map successfully generated.");
